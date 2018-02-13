@@ -1,0 +1,27 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "this is a database driven command line node",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdrachenberg/bamazon.git"
+  },
+  "keywords": [
+    "bamazon",
+    "database"
+  ],
+  "author": "Ryan Drachenberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rdrachenberg/bamazon/issues"
+  },
+  "homepage": "https://github.com/rdrachenberg/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^5.1.0",
+    "mysql": "^2.15.0"
+  }
+}
