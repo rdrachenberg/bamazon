@@ -40,27 +40,28 @@ var createTable = function() {
         askCustomer(res);
     })    
 };
-
+// create a variable that holds the inquirer function. 
 var askCustomer = function(res) {
+    //start inquirer prompt
     inquirer
         .prompt([{
             type: "input",
             name: "choice",
             message: "What would you like to purchase?"
         }]).then(function(answer){
+            // create a correct variable that is boolean false  and loop through the res object returned from the the database connection query in createTable function. 
             var correct = false;
             for (var i = 0; i < res.length; i++){
                 if(res[i].product_name == answer.choice){
                     correct = true;
-                    // if(answer.choice.toUpperCase()== "Q"){
-                    //     process.exit();
-                    // };
                     var product = answer.choice;
                     var id = i;
+                    //second question to determine the amount that the user would like to purchase
                     inquirer.prompt({
                         type: "input",
                         name: "quant",
                         message: "How many would you like??",
+                        // validates if the value entered is a number 
                         validate: function(value){
                             if(isNaN(value)==false){
                                 return true;
@@ -69,6 +70,7 @@ var askCustomer = function(res) {
                             }
                         }
                     }).then(function(answer) { 
+                        // states that if the amount in stock MINUS the answer giving in the 2nd inquirer (how many they want) is greter than or equal to 0 then connect to the bamazon database and update the table products to reflect the amount left after the purchase. If the quantity requested is greater than the amount available, the message Not enough in inventory, please be patient as we restock!". Then the askCustomer function is called to reinitilize the inquirer questions. 
                         if((res[id].stock_quantity-answer.quant)>=0){
                             connection.query("UPDATE bamazon.products SET stock_quantity='" + (res[id].stock_quantity-answer.quant)+" ' WHERE product_name='" + product + "'", function (err, res2) { 
                                 createTable(5000);
@@ -84,6 +86,7 @@ var askCustomer = function(res) {
                     })
                 }
             }
+            // checks to make sure that the inputed value is a correct value. If not, it logs "That is not a valid selection"
             if(i == res.length && correct == false){
                 console.log("That is not a valid selection");
                 askCustomer(); 
