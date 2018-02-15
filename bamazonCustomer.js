@@ -1,6 +1,8 @@
+// npm dependancies to install and require
 var mysql = require("mysql");
 var inquirer = require("inquirer"); 
-
+var consoleTable = require("console.table")
+//connection to localhost port 8889
 var connection = mysql.createConnection({
     host: "localhost",
     port: 8889,
@@ -18,22 +20,22 @@ var objectKeysToCase = require('object-keys-to-case');
 var camelCase = require('camel-case');
 var foo = { Bar: 'buz' };
 objectKeysToCase(foo, camelCase);
-// function which prompts the user for what action they should take
-
+// console log error if "uncaughtException
 process.on('uncaughtException', function (err) {
     console.log(err);
 }); 
 
+//defaults to reconnect if err is thorwn and recalls the createTable function
 connection.connect(function (err) {
     if (err) throw err;
-    // console.log("connected as id " + connection.threadId);
+    
     createTable();
 })
 
 var createTable = function() {
     connection.query("SELECT * FROM bamazon.products", function (err, res) {
         for (var i = 0; i < res.length; i++) {
-            console.log("Item# " + res[i].item_id + " | | " + res[i].product_name + " > > " + res[i].department_name + " > > $" + res[i].price + " | " +"(" + res[i].stock_quantity + ")" +"in Stock " + "\n");
+            console.table("\n" + "Item# " + res[i].item_id + " | | " + res[i].product_name + " > > " + res[i].department_name + " > > $" + res[i].price + " | " +"(" + res[i].stock_quantity + ")" +"in Stock " + "\n");
         };
         askCustomer(res);
     })    
@@ -69,8 +71,11 @@ var askCustomer = function(res) {
                     }).then(function(answer) { 
                         if((res[id].stock_quantity-answer.quant)>=0){
                             connection.query("UPDATE bamazon.products SET stock_quantity='" + (res[id].stock_quantity-answer.quant)+" ' WHERE product_name='" + product + "'", function (err, res2) { 
+                                createTable(5000);
                                 console.log("It's Shipped! Product Purchased!!");
-                                createTable();
+                                var orderTotalText = ("Your Order Cost:  $");
+                                var orderTotal = (orderTotalText) + (res[id].price * answer.quant);
+                                console.log(orderTotal);
                             })
                         } else {
                             console.log("Not enough in inventory, please be patient as we restock!");
@@ -85,78 +90,5 @@ var askCustomer = function(res) {
             }
         })
 }
-
-
-// function queryAllProducts() {
-//     connection.query("SELECT * FROM bamazon.products", function (err, res) {
-//         for (var i = 0; i < res.length; i++) {
-//             console.log(res[i].item_id + ": " + res[i].product_name + "  >>>>>>  " + "$" + res[i].price);
-//         }
-//         console.log("-----------------------------------");
-//     }) 
-// };
-
-// function start() {
-//     inquirer
-//         .prompt({
-//             name: "start",
-//             type: "confirm",
-//             message: "Would you like to see what we have in inventory?",
-//             choices: ["Yes", "No"]
-//         })
-//         .then(function (answer) {
-//             // if their answer is yes, either call the queryAllProducts functions
-//             // connection.connect(function (err, response) {
-//             //     if (err) throw err;
-//             //     console.log("connected as id " + connection.threadId);
-
-//             // });
-//             if (answer) {
-//                 console.log(answer);
-//                 queryAllProducts();
-//                 whatProductQuestion();
-//             }
-//             else {
-//                 console.log("You're Lame! ! !")
-//                 connection.end();
-//             }
-//         })
-// }; 
-// // end start() function 
-
-// function whatProductQuestion() {
-//     connection.query("SELECT * FROM bamazon.products", function(err, res){
-//         if (err) throw err;
-        
-//         inquirer
-//             .prompt([
-//                 {
-//                 name: "choice",
-//                 type: "rawlist",
-//                 choices: function() {
-//                 var choiceArray = [];
-//                 for (var i = 0; i < res.length; i++){
-//                     choiceArray.push(res[i].item_id);
-//                 }
-//                 return choiceArray;
-//                 console.log(choiceArray);
-//                 },
-//                 message: "Item NUMBER that you would like to purchase",
-//             },
-//             {
-//                 name: "item number",
-//                 type: "input",
-//                 message: "2 NUMBER that you would like to purchase 2** "
-//             }
-
-//             ])
-//             .then(function (answer) {
-//                 if (answer) {
-//                     console.log(answer);
-//                 } else {
-//                     console.log("this is not working")
-//                 }
-//             });
-//     }) 
-// };
+ 
 
