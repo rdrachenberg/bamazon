@@ -73,9 +73,12 @@ var askCustomer = function(res) {
                         // states that if the amount in stock MINUS the answer giving in the 2nd inquirer (how many they want) is greter than or equal to 0 then connect to the bamazon database and update the table products to reflect the amount left after the purchase. If the quantity requested is greater than the amount available, the message Not enough in inventory, please be patient as we restock!". Then the askCustomer function is called to reinitilize the inquirer questions. 
                         if((res[id].stock_quantity-answer.quant)>=0){
                             connection.query("UPDATE bamazon.products SET stock_quantity='" + (res[id].stock_quantity-answer.quant)+" ' WHERE product_name='" + product + "'", function (err, res2) { 
-                                createTable(5000);
+                                setTimeout(createTable, 3000);
+                                
                                 console.log("It's Shipped! Product Purchased!!");
+                                // create a variable that holds a string for the CL
                                 var orderTotalText = ("Your Order Cost:  $");
+                                //create a variable that displays var orderTotal and then calculates the quantity ordered multiplied by the price of the item
                                 var orderTotal = (orderTotalText) + (res[id].price * answer.quant);
                                 console.log(orderTotal);
                             })
