@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/rdrachenberg/bamazon#readme",
   "dependencies": {
+    "camel-case": "^3.0.0",
     "inquirer": "^5.1.0",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "object-keys-to-case": "^0.1.2"
   }
 }
